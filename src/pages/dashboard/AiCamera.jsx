@@ -221,8 +221,8 @@ const AiCamera = () => {
   useEffect(() => {
     if (!isRunning || !isCameraReady) return undefined;
 
-    const BASE_INTERVAL = 80;   // ~12.5 FPS
-    const SLOW_INTERVAL = 200;  // fallback for slow inference
+    const BASE_INTERVAL = 0;    // fetch as fast as network allows
+    const SLOW_INTERVAL = 100;  // minimal fallback
     let currentInterval = BASE_INTERVAL;
     let timeoutId = null;
 
