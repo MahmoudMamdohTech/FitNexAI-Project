@@ -48,9 +48,9 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
     .expire {{ font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 32px; }}
     .footer {{ padding: 24px 40px; background-color: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
     
-    @media (prefers-color-scheme: dark) {
-      body { background-color: #000000; }
-    }
+    @media (prefers-color-scheme: dark) {{
+      body {{ background-color: #000000; }}
+    }}
   </style>
 </head>
 <body>
@@ -129,9 +129,9 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
     .expire {{ font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }}
     .footer {{ padding: 24px 40px; background-color: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
     
-    @media (prefers-color-scheme: dark) {
-      body { background-color: #000000; }
-    }
+    @media (prefers-color-scheme: dark) {{
+      body {{ background-color: #000000; }}
+    }}
   </style>
 </head>
 <body>
