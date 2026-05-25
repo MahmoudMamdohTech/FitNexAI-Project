@@ -50,22 +50,28 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
     .footer {{ padding: 24px 40px; background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">FitNex AI</div>
-    </div>
-    <div class="body">
-      <div class="title">{title}</div>
-      <div class="subtitle">{subtitle}</div>
-      <a href="{link_url}" class="btn">{button_text}</a>
-      <div class="expire">This link expires in {TOKEN_EXPIRE_MINUTES} minutes. Do not share it with anyone.</div>
-    </div>
-    <div class="footer">
-      If you didn't request this email, you can safely ignore it.<br>
-      <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
-    </div>
-  </div>
+<body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; width: 100%; height: 100%;">
+    <tr>
+      <td align="center" valign="top" style="padding: 20px 0;">
+        <div class="container" style="text-align: left;">
+          <div class="header">
+            <div class="logo">FitNex AI</div>
+          </div>
+          <div class="body">
+            <div class="title">{title}</div>
+            <div class="subtitle">{subtitle}</div>
+            <a href="{link_url}" class="btn" style="text-align: center;">{button_text}</a>
+            <div class="expire">This link expires in {TOKEN_EXPIRE_MINUTES} minutes. Do not share it with anyone.</div>
+          </div>
+          <div class="footer">
+            If you didn't request this email, you can safely ignore it.<br>
+            <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 """
@@ -128,22 +134,28 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
     .footer {{ padding: 24px 40px; background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">FitNex AI</div>
-    </div>
-    <div class="body">
-      <div class="title">{title}</div>
-      <div class="subtitle">{subtitle}</div>
-      <div class="otp-code">{otp_code}</div>
-      <div class="expire">This code expires in {OTP_EXPIRE_MINUTES} minutes.</div>
-    </div>
-    <div class="footer">
-      If you didn't request this email, you can safely ignore it.<br>
-      <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
-    </div>
-  </div>
+<body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; width: 100%; height: 100%;">
+    <tr>
+      <td align="center" valign="top" style="padding: 20px 0;">
+        <div class="container" style="text-align: left;">
+          <div class="header">
+            <div class="logo">FitNex AI</div>
+          </div>
+          <div class="body">
+            <div class="title">{title}</div>
+            <div class="subtitle">{subtitle}</div>
+            <div class="otp-code">{otp_code}</div>
+            <div class="expire">This code expires in {OTP_EXPIRE_MINUTES} minutes.</div>
+          </div>
+          <div class="footer">
+            If you didn't request this email, you can safely ignore it.<br>
+            <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 """
