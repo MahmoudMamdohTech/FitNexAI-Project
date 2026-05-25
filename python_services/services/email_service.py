@@ -36,12 +36,9 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="color-scheme" content="light dark">
-  <meta name="supported-color-schemes" content="light dark">
   <style>
-    :root {{ color-scheme: light dark; supported-color-schemes: light dark; }}
-    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
-    .container {{ max-width: 480px; margin: 40px auto; background: #111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
+    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 40px 0; }}
+    .container {{ max-width: 480px; margin: 0 auto; background-color: #111111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
     .header {{ background: linear-gradient(135deg, #0d2b0d, #1a4a1a); padding: 32px 40px; text-align: center; }}
     .logo {{ font-size: 24px; font-weight: 800; color: #39ff14; letter-spacing: 2px; }}
     .body {{ padding: 40px; text-align: center; }}
@@ -49,31 +46,29 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
     .subtitle {{ font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }}
     .btn {{ display: inline-block; background: #39ff14; color: #000000; text-decoration: none; font-weight: 700; border-radius: 8px; padding: 14px 32px; margin-bottom: 24px; }}
     .expire {{ font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 32px; }}
-    .footer {{ padding: 24px 40px; background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
+    .footer {{ padding: 24px 40px; background-color: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
+    
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #000000; }
+    }
   </style>
 </head>
-<body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; background-image: linear-gradient(#0a1a0a, #0a1a0a); width: 100%; height: 100%;">
-    <tr>
-      <td align="center" valign="top" style="padding: 20px 0;">
-        <div class="container" style="text-align: left;">
-          <div class="header">
-            <div class="logo">FitNex AI</div>
-          </div>
-          <div class="body">
-            <div class="title">{title}</div>
-            <div class="subtitle">{subtitle}</div>
-            <a href="{link_url}" class="btn" style="text-align: center;">{button_text}</a>
-            <div class="expire">This link expires in {TOKEN_EXPIRE_MINUTES} minutes. Do not share it with anyone.</div>
-          </div>
-          <div class="footer">
-            If you didn't request this email, you can safely ignore it.<br>
-            <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">FitNex AI</div>
+    </div>
+    <div class="body">
+      <div class="title">{title}</div>
+      <div class="subtitle">{subtitle}</div>
+      <a href="{link_url}" class="btn" style="text-align: center;">{button_text}</a>
+      <div class="expire">This link expires in {TOKEN_EXPIRE_MINUTES} minutes. Do not share it with anyone.</div>
+    </div>
+    <div class="footer">
+      If you didn't request this email, you can safely ignore it.<br>
+      <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
+    </div>
+  </div>
 </body>
 </html>
 """
@@ -122,44 +117,39 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="color-scheme" content="light dark">
-  <meta name="supported-color-schemes" content="light dark">
   <style>
-    :root {{ color-scheme: light dark; supported-color-schemes: light dark; }}
-    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
-    .container {{ max-width: 480px; margin: 40px auto; background: #111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
+    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 40px 0; }}
+    .container {{ max-width: 480px; margin: 0 auto; background-color: #111111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
     .header {{ background: linear-gradient(135deg, #0d2b0d, #1a4a1a); padding: 32px 40px; text-align: center; }}
     .logo {{ font-size: 24px; font-weight: 800; color: #39ff14; letter-spacing: 2px; }}
     .body {{ padding: 40px; text-align: center; }}
     .title {{ font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }}
     .subtitle {{ font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }}
-    .otp-code {{ font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #39ff14; margin: 24px 0; }}
+    .otp-code {{ font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #39ff14; margin: 24px 0; text-align: center; }}
     .expire {{ font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }}
-    .footer {{ padding: 24px 40px; background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
+    .footer {{ padding: 24px 40px; background-color: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; font-size: 12px; color: rgba(255,255,255,0.3); }}
+    
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #000000; }
+    }
   </style>
 </head>
-<body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; background-image: linear-gradient(#0a1a0a, #0a1a0a); width: 100%; height: 100%;">
-    <tr>
-      <td align="center" valign="top" style="padding: 20px 0;">
-        <div class="container" style="text-align: left;">
-          <div class="header">
-            <div class="logo">FitNex AI</div>
-          </div>
-          <div class="body">
-            <div class="title">{title}</div>
-            <div class="subtitle">{subtitle}</div>
-            <div class="otp-code">{otp_code}</div>
-            <div class="expire">This code expires in {OTP_EXPIRE_MINUTES} minutes.</div>
-          </div>
-          <div class="footer">
-            If you didn't request this email, you can safely ignore it.<br>
-            <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">FitNex AI</div>
+    </div>
+    <div class="body">
+      <div class="title">{title}</div>
+      <div class="subtitle">{subtitle}</div>
+      <div class="otp-code">{otp_code}</div>
+      <div class="expire">This code expires in {OTP_EXPIRE_MINUTES} minutes.</div>
+    </div>
+    <div class="footer">
+      If you didn't request this email, you can safely ignore it.<br>
+      <span style="opacity: 0.5;">Message ID: {secrets.token_hex(4)}</span>
+    </div>
+  </div>
 </body>
 </html>
 """
