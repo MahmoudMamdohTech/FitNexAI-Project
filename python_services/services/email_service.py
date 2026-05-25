@@ -36,9 +36,11 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
   <style>
-    body {{ font-family: 'Inter', Arial, sans-serif; background: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
+    :root {{ color-scheme: light dark; supported-color-schemes: light dark; }}
+    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
     .container {{ max-width: 480px; margin: 40px auto; background: #111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
     .header {{ background: linear-gradient(135deg, #0d2b0d, #1a4a1a); padding: 32px 40px; text-align: center; }}
     .logo {{ font-size: 24px; font-weight: 800; color: #39ff14; letter-spacing: 2px; }}
@@ -51,7 +53,7 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
   </style>
 </head>
 <body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; width: 100%; height: 100%;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; background-image: linear-gradient(#0a1a0a, #0a1a0a); width: 100%; height: 100%;">
     <tr>
       <td align="center" valign="top" style="padding: 20px 0;">
         <div class="container" style="text-align: left;">
@@ -120,9 +122,11 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
   <style>
-    body {{ font-family: 'Inter', Arial, sans-serif; background: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
+    :root {{ color-scheme: light dark; supported-color-schemes: light dark; }}
+    body {{ font-family: 'Inter', Arial, sans-serif; background-color: #0a1a0a; color: #ffffff; margin: 0; padding: 0; }}
     .container {{ max-width: 480px; margin: 40px auto; background: #111; border: 1px solid rgba(57,255,20,0.2); border-radius: 16px; overflow: hidden; }}
     .header {{ background: linear-gradient(135deg, #0d2b0d, #1a4a1a); padding: 32px 40px; text-align: center; }}
     .logo {{ font-size: 24px; font-weight: 800; color: #39ff14; letter-spacing: 2px; }}
@@ -135,7 +139,7 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
   </style>
 </head>
 <body style="background-color: #0a1a0a; margin: 0; padding: 0; width: 100%; height: 100%;">
-  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; width: 100%; height: 100%;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#0a1a0a" style="background-color: #0a1a0a; background-image: linear-gradient(#0a1a0a, #0a1a0a); width: 100%; height: 100%;">
     <tr>
       <td align="center" valign="top" style="padding: 20px 0;">
         <div class="container" style="text-align: left;">
