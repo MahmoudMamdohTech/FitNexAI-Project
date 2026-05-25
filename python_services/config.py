@@ -19,12 +19,9 @@ class Settings(BaseSettings):
     # CORS
     ALLOWED_ORIGINS: str = "*"
 
-    # SMTP (Gmail for now)
-    SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587
-    SMTP_USER: str = ""
-    SMTP_PASS: str = ""   # Gmail App Password
-    SMTP_FROM_EMAIL: str = ""
+    # Email (Resend)
+    RESEND_API_KEY: str = ""
+    EMAIL_FROM: str = "onboarding@resend.dev"
 
     # frontend URL (for email links)
     FRONTEND_URL: str = "http://localhost:5173"
