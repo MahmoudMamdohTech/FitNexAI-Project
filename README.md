@@ -20,7 +20,7 @@ AI-powered fitness and nutrition planning, featuring real-time exercise form cor
 | Database   | Supabase (PostgreSQL)                    |
 | AI/CV      | MediaPipe Pose Landmarker, OpenCV        |
 | Auth       | JWT (python-jose), bcrypt               |
-| Email      | Resend API                               |
+| Email      | Gmail SMTP                               |
 | Deployment | Vercel (frontend), Render/Railway (API)  |
 
 ## Getting Started
@@ -72,8 +72,11 @@ DATABASE_URL=postgresql+asyncpg://...your-supabase-url...
 JWT_SECRET=your-secret-key
 JWT_EXPIRE_HOURS=72
 ALLOWED_ORIGINS=http://localhost:5173
-RESEND_API_KEY=re_123456789
-EMAIL_FROM=onboarding@resend.dev
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM_EMAIL=your-email@gmail.com
 FRONTEND_URL=http://localhost:5173
 ```
 

@@ -6,8 +6,11 @@ import logging
 import random
 import secrets
 import string
-import resend
+import smtplib
+import email.utils
 from datetime import datetime, timedelta, timezone
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from config import settings
 
@@ -69,8 +72,8 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
 """
 
 
-def _send_email_resend(to_email: str, subject: str, html_body: str, text_body: str) -> bool:
-    if not settings.RESEND_API_KEY:
+def _send_email_smtp(to_email: str, subject: str, html_body: str, text_body: str) -> bool:
+    if not settings.SMTP_USER or not settings.SMTP_PASS:
         print(
             f"\n{'='*55}\n"
             f"  DEV MODE — EMAIL NOT SENT\n"
@@ -83,18 +86,24 @@ def _send_email_resend(to_email: str, subject: str, html_body: str, text_body: s
         return True
 
     try:
-        resend.api_key = settings.RESEND_API_KEY
-        
-        params: resend.Emails.SendParams = {
-            "from": settings.EMAIL_FROM,
-            "to": [to_email],
-            "subject": subject,
-            "html": html_body,
-            "text": text_body,
-        }
-        
-        email_response = resend.Emails.send(params)
-        logger.info("Email sent to %s (id: %s)", to_email, email_response.get("id"))
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = f"FitNex AI <{settings.SMTP_FROM_EMAIL}>"
+        msg["To"] = to_email
+        msg["Date"] = email.utils.formatdate(localtime=False)
+        msg["Message-ID"] = email.utils.make_msgid(domain=settings.SMTP_FROM_EMAIL.split('@')[-1] if '@' in settings.SMTP_FROM_EMAIL else 'fitnex.ai')
+        msg["Reply-To"] = settings.SMTP_FROM_EMAIL
+
+        msg.attach(MIMEText(text_body, "plain"))
+        msg.attach(MIMEText(html_body, "html"))
+
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+            server.ehlo()
+            server.starttls()
+            server.login(settings.SMTP_USER, settings.SMTP_PASS)
+            server.sendmail(settings.SMTP_FROM_EMAIL, to_email, msg.as_string())
+
+        logger.info("Email sent to %s", to_email)
         return True
 
     except Exception as exc:
@@ -144,7 +153,7 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
 </html>
 """
     text_body = f"Your verification code is: {otp_code}\n\nThis code expires in {OTP_EXPIRE_MINUTES} minutes."
-    return _send_email_resend(to_email, "Verify your FitNex AI account", html_body, text_body)
+    return _send_email_smtp(to_email, "Verify your FitNex AI account", html_body, text_body)
 
 
 def send_password_reset_email(to_email: str, raw_token: str) -> bool:
@@ -154,4 +163,4 @@ def send_password_reset_email(to_email: str, raw_token: str) -> bool:
     subtitle = "Click the button below to securely reset your password."
     html_body = _build_email_html(title, subtitle, "Reset Password", link_url)
     text_body = f"You requested a password reset. Reset your password by visiting: {link_url}\n\nThis link expires in {TOKEN_EXPIRE_MINUTES} minutes."
-    return _send_email_resend(to_email, "Reset your FitNex AI password", html_body, text_body)
+    return _send_email_smtp(to_email, "Reset your FitNex AI password", html_body, text_body)
