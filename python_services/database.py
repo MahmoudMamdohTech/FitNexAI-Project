@@ -8,28 +8,23 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.pool import NullPool
 
 from config import settings
 
-# engine config for PostgreSQL via asyncpg
-_engine_kwargs = {
-    "echo": False,
-    "pool_size": 5,
-    "max_overflow": 10,
-    "pool_timeout": 30,
-    "pool_recycle": 1800,
-    "pool_pre_ping": True,
-    "connect_args": {
-        "statement_cache_size": 0,        # required for Supabase transaction pooler
-        "prepared_statement_cache_size": 0,
-        "command_timeout": 30,
-    },
-    "execution_options": {
+# NullPool is required when using Supabase's Transaction Pooler (port 6543)
+# because pgbouncer in transaction mode does not support prepared statements.
+# NullPool creates a fresh connection for every request and never caches them,
+# which avoids the DuplicatePreparedStatementError entirely.
+engine = create_async_engine(
+    settings.DATABASE_URL,
+    echo=False,
+    poolclass=NullPool,
+    connect_args={
+        "statement_cache_size": 0,
         "prepared_statement_cache_size": 0,
     },
-}
-
-engine = create_async_engine(settings.DATABASE_URL, **_engine_kwargs)
+)
 
 # session factory
 async_session = async_sessionmaker(
