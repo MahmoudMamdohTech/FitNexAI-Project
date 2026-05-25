@@ -8,6 +8,7 @@ import secrets
 import string
 import json
 import urllib.request
+import urllib.error
 from datetime import datetime, timedelta, timezone
 
 from config import settings
@@ -96,6 +97,10 @@ def _send_email_proxy(to_email: str, subject: str, html_body: str, text_body: st
             logger.info("Email sent via Vercel proxy to %s: %s", to_email, res_data)
             return True
             
+    except urllib.error.HTTPError as exc:
+        error_body = exc.read().decode('utf-8')
+        logger.error("Failed to send email via Vercel proxy to %s. Status: %s, Body: %s", to_email, exc.code, error_body)
+        return False
     except Exception as exc:
         logger.error("Failed to send email via Vercel proxy to %s: %s", to_email, exc)
         return False
