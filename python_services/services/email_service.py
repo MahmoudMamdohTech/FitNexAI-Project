@@ -6,11 +6,9 @@ import logging
 import random
 import secrets
 import string
-import smtplib
-import email.utils
+import json
+import urllib.request
 from datetime import datetime, timedelta, timezone
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 from config import settings
 
@@ -72,42 +70,34 @@ def _build_email_html(title: str, subtitle: str, button_text: str, link_url: str
 """
 
 
-def _send_email_smtp(to_email: str, subject: str, html_body: str, text_body: str) -> bool:
-    if not settings.SMTP_USER or not settings.SMTP_PASS:
-        print(
-            f"\n{'='*55}\n"
-            f"  DEV MODE — EMAIL NOT SENT\n"
-            f"  To:   {to_email}\n"
-            f"  Subj: {subject}\n"
-            f"{'='*55}\n",
-            flush=True,
-        )
+def _send_email_proxy(to_email: str, subject: str, html_body: str, text_body: str) -> bool:
+    # If running locally, don't try to call the Vercel API, just print it
+    if "localhost" in settings.FRONTEND_URL or "127.0.0.1" in settings.FRONTEND_URL:
+        print(f"\n{'='*55}\n  DEV MODE — EMAIL NOT SENT\n  To:   {to_email}\n  Subj: {subject}\n{'='*55}\n", flush=True)
         logger.warning("DEV MODE EMAIL for %s: %s", to_email, subject)
         return True
 
+    url = f"{settings.FRONTEND_URL}/api/send-email"
+    data = {
+        "to": to_email,
+        "subject": subject,
+        "html": html_body,
+        "text": text_body
+    }
+    
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = f"FitNex AI <{settings.SMTP_FROM_EMAIL}>"
-        msg["To"] = to_email
-        msg["Date"] = email.utils.formatdate(localtime=False)
-        msg["Message-ID"] = email.utils.make_msgid(domain=settings.SMTP_FROM_EMAIL.split('@')[-1] if '@' in settings.SMTP_FROM_EMAIL else 'fitnex.ai')
-        msg["Reply-To"] = settings.SMTP_FROM_EMAIL
-
-        msg.attach(MIMEText(text_body, "plain"))
-        msg.attach(MIMEText(html_body, "html"))
-
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-            server.ehlo()
-            server.starttls()
-            server.login(settings.SMTP_USER, settings.SMTP_PASS)
-            server.sendmail(settings.SMTP_FROM_EMAIL, to_email, msg.as_string())
-
-        logger.info("Email sent to %s", to_email)
-        return True
-
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(data).encode('utf-8'),
+            headers={'Content-Type': 'application/json'}
+        )
+        with urllib.request.urlopen(req) as response:
+            res_data = json.loads(response.read().decode('utf-8'))
+            logger.info("Email sent via Vercel proxy to %s: %s", to_email, res_data)
+            return True
+            
     except Exception as exc:
-        logger.error("Failed to send email to %s: %s", to_email, exc)
+        logger.error("Failed to send email via Vercel proxy to %s: %s", to_email, exc)
         return False
 
 
@@ -153,7 +143,7 @@ def send_otp_email(to_email: str, otp_code: str) -> bool:
 </html>
 """
     text_body = f"Your verification code is: {otp_code}\n\nThis code expires in {OTP_EXPIRE_MINUTES} minutes."
-    return _send_email_smtp(to_email, "Verify your FitNex AI account", html_body, text_body)
+    return _send_email_proxy(to_email, "Verify your FitNex AI account", html_body, text_body)
 
 
 def send_password_reset_email(to_email: str, raw_token: str) -> bool:
@@ -163,4 +153,4 @@ def send_password_reset_email(to_email: str, raw_token: str) -> bool:
     subtitle = "Click the button below to securely reset your password."
     html_body = _build_email_html(title, subtitle, "Reset Password", link_url)
     text_body = f"You requested a password reset. Reset your password by visiting: {link_url}\n\nThis link expires in {TOKEN_EXPIRE_MINUTES} minutes."
-    return _send_email_smtp(to_email, "Reset your FitNex AI password", html_body, text_body)
+    return _send_email_proxy(to_email, "Reset your FitNex AI password", html_body, text_body)
