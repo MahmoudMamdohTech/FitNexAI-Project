@@ -20,7 +20,7 @@ AI-powered fitness and nutrition planning, featuring real-time exercise form cor
 | Database   | Supabase (PostgreSQL)                    |
 | AI/CV      | MediaPipe Pose Landmarker, OpenCV        |
 | Auth       | JWT (python-jose), bcrypt               |
-| Email      | Gmail SMTP                               |
+| Email      | Nodemailer via Vercel Serverless Proxy   |
 | Deployment | Vercel (frontend), Render/Railway (API)  |
 
 ## Getting Started
@@ -72,12 +72,9 @@ DATABASE_URL=postgresql+asyncpg://...your-supabase-url...
 JWT_SECRET=your-secret-key
 JWT_EXPIRE_HOURS=72
 ALLOWED_ORIGINS=http://localhost:5173
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-SMTP_FROM_EMAIL=your-email@gmail.com
 FRONTEND_URL=http://localhost:5173
 ```
+
+> **Note on Emails:** During local development (`FRONTEND_URL=http://localhost:5173`), emails (OTP codes) are simply printed to your Python terminal to save you the hassle of setting up local SMTP. In production, the backend sends a request to the frontend's Vercel Serverless Function (`/api/send-email`), which uses Nodemailer and requires `SMTP_USER` and `SMTP_PASS` to be configured in your Vercel Dashboard.
 
 See `.env.example` (root) and `python_services/.env.example` for full reference.
