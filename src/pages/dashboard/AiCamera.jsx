@@ -234,7 +234,7 @@ const AiCamera = () => {
         if (videoEl && canvas && videoEl.readyState >= 2 && videoEl.videoWidth && videoEl.videoHeight) {
           analyzeLockRef.current = true;
           try {
-            const MAX_WIDTH = 480;
+            const MAX_WIDTH = 240;
             const scale = MAX_WIDTH / videoEl.videoWidth;
             canvas.width = MAX_WIDTH;
             canvas.height = videoEl.videoHeight * scale;
@@ -242,7 +242,7 @@ const AiCamera = () => {
             const ctx = canvas.getContext('2d');
             if (ctx) {
               ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-              const imageSrc = canvas.toDataURL('image/jpeg', 0.5);
+              const imageSrc = canvas.toDataURL('image/jpeg', 0.3);
               if (imageSrc) {
                 const frameB64 = imageSrc.split(',')[1];
                 const result = await gymService.analyzeFrame(
