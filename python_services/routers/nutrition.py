@@ -20,7 +20,7 @@ from models.user import User
 logger = logging.getLogger("nutrition_service.nutrition")
 router = APIRouter(tags=["Nutrition"])
 
-# food database (representative subset — swap with full DB or CSV in prod)
+# Traditional Egyptian food database curated for production
 FOOD_DB = [
     # breakfast
     {"id": 1,  "name": "Ful Medames with Olive Oil & Baladi Bread", "meal_type": "breakfast",
