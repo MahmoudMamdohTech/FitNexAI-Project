@@ -1,93 +1,509 @@
-/* FitNex AI - Camera Page Layout */
+/* FitNex AI - Cyberpunk Dark-Mode Vision Coach Styling */
 
-.camera-layout {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: 1fr 340px;
-  margin-top: 24px;
-  padding-bottom: 32px;
+.camera-page {
+  animation: fadeIn 300ms var(--ease-out);
+  padding-bottom: 40px;
 }
 
-.main-camera-area {
+.camera-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.camera-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 229, 117, 0.1);
+  border: 1px solid rgba(0, 229, 117, 0.3);
+  color: var(--brand-primary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.camera-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 8px var(--brand-primary);
+}
+
+.camera-title {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.camera-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.camera-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.exercise-select {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 160px;
+}
+
+.exercise-select:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px var(--brand-primary-tint);
+}
+
+.exercise-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-camera-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--brand-primary);
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 229, 117, 0.35);
+}
+
+.btn-camera-start:hover {
+  background: var(--brand-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 229, 117, 0.45);
+}
+
+.btn-camera-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #EF4444;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.btn-camera-stop:hover {
+  background: #DC2626;
+  transform: translateY(-1px);
+}
+
+.camera-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #F87171;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Main Grid Layout */
+.camera-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Viewport Area */
+.camera-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #050608;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Corner bracket targeting overlay */
+.camera-viewport::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: calc(var(--radius-lg) - 6px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirrored for natural selfie view */
+}
+
+.camera-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1); /* Must match video mirror */
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* In-viewport HUD */
+.camera-hud {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.hud-badge {
+  background: rgba(9, 10, 12, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.protocol-badge {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.protocol-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 10px var(--brand-primary);
+  animation: pulse 1.8s infinite;
+}
+
+.rep-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  min-width: 100px;
+  border: 1px solid rgba(0, 229, 117, 0.4);
+  background: rgba(9, 10, 12, 0.9);
+}
+
+.rep-number {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--brand-primary);
+  font-family: var(--font-display, monospace);
+  text-shadow: 0 0 16px rgba(0, 229, 117, 0.4);
+}
+
+.rep-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Center / Bottom feedback notification pill */
+.hud-bottom {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.hud-feedback-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s ease;
+}
+
+.hud-feedback-pill.correct {
+  background: rgba(0, 229, 117, 0.18);
+  border: 1.5px solid var(--brand-primary);
+  color: #FFFFFF;
+}
+
+.hud-feedback-pill.correct span.material-symbols-outlined {
+  color: var(--brand-primary);
+}
+
+.hud-feedback-pill.warning {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1.5px solid #F59E0B;
+  color: #FEF3C7;
+}
+
+.hud-feedback-pill.warning span.material-symbols-outlined {
+  color: #F59E0B;
+}
+
+/* Metrics bar at the bottom */
+.hud-metrics {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+}
+
+.metric-chip {
+  background: rgba(9, 10, 12, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metric-label {
+  color: var(--text-muted);
+}
+
+.metric-val {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Placeholder state before starting camera */
+.camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 440px;
+  z-index: 5;
+}
+
+.placeholder-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(0, 229, 117, 0.08);
+  border: 1px solid rgba(0, 229, 117, 0.25);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.placeholder-icon span {
+  font-size: 34px;
+}
+
+.camera-placeholder h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.camera-placeholder p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Sidebar Telemetry & Tips Panel */
+.camera-sidebar {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.camera-view {
-  flex: 1;
-  background: #000;
-  border-radius: var(--radius-lg);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border-default);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 480px;
-  box-shadow: var(--shadow-lg);
-}
-
-.camera-view video,
-.camera-view img.fallback-gif {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.recording-dot {
-  width: 8px;
-  height: 8px;
-  background: #EF4444;
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-
-.feedback-panel {
+.sidebar-panel {
   background: var(--bg-surface-1);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  padding: 24px;
+  padding: 20px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.panel-header span.material-symbols-outlined {
+  color: var(--brand-primary);
+  font-size: 18px;
+}
+
+/* Angle Gauge */
+.angle-meter-container {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.feedback-item {
-  padding: 14px 16px;
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--brand-primary);
-  background: var(--bg-surface-2);
-  margin-bottom: 12px;
+.angle-meter-header {
+  display: flex;
+  justify-content: space-between;
   font-size: 13px;
-  color: var(--text-primary);
-  line-height: 1.5;
 }
 
-.feedback-item:last-child {
-  margin-bottom: 0;
+.angle-meter-title {
+  color: var(--text-secondary);
 }
 
-.feedback-item.warning {
-  border-left-color: var(--color-carbs);
-  background: rgba(251, 191, 36, 0.08);
+.angle-meter-value {
+  color: var(--brand-primary);
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 15px;
 }
 
-.feedback-item.info {
-  border-left-color: var(--color-protein);
-  background: rgba(56, 189, 248, 0.08);
+.angle-meter-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
 }
 
-.camera-hud-badge {
-  background: rgba(9, 10, 12, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
+.angle-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981, #00E575);
+  border-radius: 4px;
+  transition: width 0.15s ease-out;
 }
 
+/* Exercise Coaching Tips */
+.coaching-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.coaching-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.coaching-tip-item span.tip-bullet {
+  color: var(--brand-primary);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* Responsive adjustments */
 @media (max-width: 1024px) {
-  .camera-layout {
+  .camera-grid {
     grid-template-columns: 1fr;
+  }
+  .hud-metrics {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .camera-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .camera-controls {
+    width: 100%;
+  }
+  .exercise-select {
+    flex: 1;
+  }
+  .rep-number {
+    font-size: 28px;
+  }
+  .hud-feedback-pill {
+    font-size: 13px;
+    padding: 10px 18px;
   }
 }
