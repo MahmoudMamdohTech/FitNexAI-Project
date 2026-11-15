@@ -7,41 +7,44 @@ const HighlightSection = () => {
       <div className="container">
         <div className="highlight-card">
           <div className="highlight-content">
-            <span className="new-feature-badge">NEW FEATURE</span>
-            <h2>Train like a pro, eat like a champion.</h2>
-            <p>
-              Our extensive database of over 10,000 foods and 2,000 exercises ensures you never miss a beat. Syncs with
-              Apple Health and Google Fit.
+            <div>
+              <span className="section-tag">
+                Computer Vision Engine
+              </span>
+            </div>
+            <h2 className="highlight-title">Train with elite biomechanics. Fuel with precision.</h2>
+            <p className="highlight-desc">
+              FitNex AI couples sub-millimeter joint tracking with adaptive macronutrient partitioning. Gain immediate kinematic feedback on every repetition directly from your browser.
             </p>
-            <ul className="highlight-list">
-              <li>
-                <div className="check-icon">
-                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="highlight-features">
+              <div className="highlight-feature-item">
+                <div className="highlight-feature-icon">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px' }}>
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                Real-time macro tracking
-              </li>
-              <li>
-                <div className="check-icon">
-                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <span>Real-time pose estimation &amp; rep lockout verification</span>
+              </div>
+              <div className="highlight-feature-item">
+                <div className="highlight-feature-icon">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px' }}>
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                Custom workout builder
-              </li>
-              <li>
-                <div className="check-icon">
-                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <span>Algorithmic BMR &amp; macro partition matching your objective</span>
+              </div>
+              <div className="highlight-feature-item">
+                <div className="highlight-feature-icon">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '10px', height: '10px' }}>
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                Community challenges
-              </li>
-            </ul>
+                <span>Private local browser processing with zero cloud video storage</span>
+              </div>
+            </div>
           </div>
           <div className="highlight-image">
-            <img src={athleteImg} alt="Athlete training" />
+            <img src={athleteImg} alt="Athlete training with precision form" />
           </div>
         </div>
       </div>

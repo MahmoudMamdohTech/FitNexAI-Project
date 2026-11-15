@@ -33,26 +33,26 @@ const Login = () => {
     if (!email.trim()) {
       setError({ type: 'validation', msg: 'Please enter your email address.' });
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
     if (!email.includes('@')) {
       setError({ type: 'validation', msg: 'Email is missing the @ symbol.' });
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
     const domain = email.split('@')[1];
     if (!domain || !domain.includes('.')) {
       setError({ type: 'validation', msg: 'Email is missing a domain (e.g. gmail.com).' });
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
     if (!password) {
       setError({ type: 'validation', msg: 'Please enter your password.' });
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
 
@@ -73,7 +73,7 @@ const Login = () => {
         setError({ type: 'credentials', msg });
       }
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,7 @@ const Login = () => {
               <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                 <Link
                   to="/verify"
-                  style={{ color: '#39ff14', fontWeight: '600', fontSize: '14px' }}
+                  style={{ color: 'var(--brand-primary)', fontWeight: '600', fontSize: '14px' }}
                 >
                   Verify Email →
                 </Link>
@@ -154,7 +154,12 @@ const Login = () => {
                   autoComplete="current-password"
                   required
                 />
-                <button type="button" className="input-toggle" onClick={() => setShowPassword(!showPassword)}>
+                <button
+                  type="button"
+                  className="input-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
                   {showPassword ? (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
                       <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
@@ -170,21 +175,22 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="form-row">
-              <label className="checkbox-label">
+            <div className="auth-sub-links" style={{ margin: '8px 0 24px' }}>
+              <label className="checkbox-label" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                 <input type="checkbox" id="remember" name="remember" />
                 Remember me
               </label>
               <Link to="/forgot-password" className="forgot-link">Forgot Password?</Link>
             </div>
 
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Logging in...' : 'LOG IN'}
+            <button type="submit" className="btn-primary auth-btn" disabled={loading}>
+              {loading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="auth-divider"></div>
-          <p className="auth-switch">Don't have an account? <Link to="/signup">Sign Up →</Link></p>
+          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)' }}>
+            Don't have an account? <Link to="/signup" style={{ color: 'var(--brand-primary)', fontWeight: '600' }}>Sign Up →</Link>
+          </div>
         </div>
       </main>
     </div>

@@ -105,78 +105,76 @@ const Verify = () => {
 
   return (
     <div className="auth-page">
-      <main className="auth-main" style={{ marginTop: '5rem' }}>
+      <main className="auth-main" style={{ marginTop: '2rem' }}>
         <div className="auth-card">
-          {/* Icon */}
+          {/* Email verification shield icon */}
           <div className="auth-icon-wrapper">
             <div className="auth-icon-circle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#39ff14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '28px', height: '28px' }}>
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.95 12a19.79 19.79 0 0 1-3-8.59A2 2 0 0 1 4 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '26px', height: '26px' }}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
               </svg>
             </div>
           </div>
 
           <h1 className="auth-card-title">Verify Your Email</h1>
           <p className="auth-card-subtitle">
-            Enter the 6-digit code sent to{' '}
-            <span style={{ color: '#39ff14', fontWeight: '600' }}>{maskedEmail}</span>
+            Enter the 6-digit code sent to <strong style={{ color: 'var(--text-primary)' }}>{maskedEmail}</strong>
           </p>
 
-          <form onSubmit={handleVerify} noValidate>
-            {error && (
-              <div className="auth-error-banner visible" role="alert" style={{ marginBottom: '1rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="8" x2="12" y2="12"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <span>{error}</span>
-              </div>
-            )}
+          <form onSubmit={handleVerify}>
+            {/* Error banner */}
+            <div className={`auth-error-banner ${error ? 'visible' : ''}`} role="alert">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span>{error}</span>
+            </div>
 
+            {/* Resend success notice */}
             {resendMsg && (
-              <div className="auth-success-banner">
+              <div style={{ background: 'var(--brand-primary-tint)', border: '1px solid var(--brand-primary-border)', color: 'var(--brand-primary)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', fontSize: '13px', marginBottom: '16px', textAlign: 'center', fontWeight: '500' }}>
                 {resendMsg}
               </div>
             )}
 
-            {/* OTP Inputs */}
+            {/* 6-digit inputs */}
             <div className="otp-container" onPaste={handlePaste}>
               {otp.map((digit, i) => (
                 <input
                   key={i}
-                  ref={el => inputs.current[i] = el}
+                  ref={el => (inputs.current[i] = el)}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
                   onChange={e => handleChange(i, e.target.value)}
                   onKeyDown={e => handleKeyDown(i, e)}
-                  className={`otp-input ${digit ? 'filled' : ''}`}
+                  className="otp-input"
+                  aria-label={`Digit ${i + 1}`}
+                  autoFocus={i === 0}
                 />
               ))}
             </div>
 
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Verifying...' : 'VERIFY CODE'}
+            <button type="submit" className="btn-primary auth-btn" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify Email & Continue →'}
             </button>
           </form>
 
-          <div className="auth-divider"></div>
-          <p className="auth-switch">
-            Didn't receive a code?{' '}
-            <span
-              style={{
-                color: countdown > 0 ? 'rgba(255,255,255,0.35)' : '#39ff14',
-                fontWeight: '600',
-                cursor: countdown > 0 ? 'not-allowed' : 'pointer',
-                transition: 'color 0.2s',
-              }}
+          {/* Resend */}
+          <div className="resend-wrap">
+            Didn't receive a code?
+            <button
               onClick={handleResend}
+              disabled={countdown > 0 || resending}
+              className="resend-btn"
             >
-              {resending ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Resend →'}
-            </span>
-          </p>
+              {countdown > 0 ? `Resend in ${countdown}s` : resending ? 'Sending...' : 'Resend Code'}
+            </button>
+          </div>
         </div>
       </main>
     </div>

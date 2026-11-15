@@ -6,8 +6,8 @@ const FeatureCard = ({ title, description, icon }) => {
       <div className="feature-icon-wrap">
         {icon}
       </div>
-      <h3>{title}</h3>
-      <p>{description}</p>
+      <h3 className="feature-title">{title}</h3>
+      <p className="feature-desc">{description}</p>
     </div>
   );
 };

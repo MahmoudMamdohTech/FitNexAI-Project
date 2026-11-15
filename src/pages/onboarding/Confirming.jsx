@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userService } from '../../services/userService';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const LOADING_MESSAGES = [
-  "Confirming plan...",
-  "Generating optimal macros...",
-  "Allocating personalized diet constraints...",
-  "Finalizing dashboard..."
+  "Validating physiological baselines...",
+  "Computing BMR & expenditure coefficients...",
+  "Synthesizing optimal macronutrient partition...",
+  "Finalizing personalized AI exercise dashboard..."
 ];
 
 const Confirming = () => {
@@ -24,23 +25,23 @@ const Confirming = () => {
     }, 900);
 
     const generatePlan = async () => {
-        if (generationStarted.current) return;
-        generationStarted.current = true;
+      if (generationStarted.current) return;
+      generationStarted.current = true;
+      
+      try {
+        const rawUser = localStorage.getItem('fitnex_user');
+        if (!rawUser) throw new Error("User session not found.");
+        const user = JSON.parse(rawUser);
+        if (!user.preferences) throw new Error("No biometrics preferences found.");
         
-        try {
-            const rawUser = localStorage.getItem('fitnex_user');
-            if (!rawUser) throw new Error("User not found");
-            const user = JSON.parse(rawUser);
-            if (!user.preferences) throw new Error("No preferences found");
-            
-            await userService.savePreferences(user.preferences);
-            clearInterval(messageInterval);
-            navigate('/dashboard');
-        } catch (err) {
-            console.error(err);
-            clearInterval(messageInterval);
-            setError(err.message || "Failed to generate plan.");
-        }
+        await userService.savePreferences(user.preferences);
+        clearInterval(messageInterval);
+        navigate('/dashboard');
+      } catch (err) {
+        console.error(err);
+        clearInterval(messageInterval);
+        setError(err.message || "Failed to generate workout and nutrition plan.");
+      }
     };
     
     generatePlan();
@@ -51,42 +52,51 @@ const Confirming = () => {
   }, [navigate]);
 
   return (
-    <main className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-      <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+    <main className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: '40px 24px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '480px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
         
-        {/* Simple Neon Pulse Core */}
         {!error ? (
-        <>
-            <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
-            background: 'rgba(57, 255, 20, 0.2)',
-            border: '2px solid #39ff14',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            animation: 'pulse 1.5s infinite ease-in-out'
-            }}>
-            <span className="material-symbols-outlined" style={{ color: '#39ff14', fontSize: '32px', animation: 'spin 2s linear infinite' }}>
-                sync
-            </span>
+          <>
+            <div style={{ width: '72px', height: '72px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <LoadingSpinner size={48} />
             </div>
 
-            <h2 style={{ fontSize: '26px', fontWeight: '800', margin: '0' }}>Crafting Your Plan</h2>
-            
-            {/* Sequential Text Loader */}
-            <p style={{ color: '#39ff14', fontSize: '15px', minHeight: '22px', fontWeight: '600', letterSpacing: '0.5px' }}>
-            {LOADING_MESSAGES[messageIndex]}
-            </p>
-        </>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <h1 style={{ fontSize: '24px', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                Compiling AI Performance Protocol
+              </h1>
+              <p style={{ color: 'var(--brand-primary)', fontSize: '14px', fontWeight: '600', minHeight: '24px', letterSpacing: '0.02em' }}>
+                {LOADING_MESSAGES[messageIndex]}
+              </p>
+            </div>
+
+            {/* Stepper Indicator */}
+            <div style={{ display: 'flex', gap: '6px', width: '100%', maxWidth: '240px', marginTop: '8px' }}>
+              {LOADING_MESSAGES.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    flex: 1,
+                    height: '3px',
+                    borderRadius: '2px',
+                    background: i <= messageIndex ? 'var(--brand-primary)' : 'var(--bg-surface-3)',
+                    transition: 'background-color 300ms var(--ease-out)',
+                  }}
+                />
+              ))}
+            </div>
+          </>
         ) : (
-            <>
-                <div style={{ color: '#ff3333', fontSize: '48px', marginBottom: '10px' }} className="material-symbols-outlined">error</div>
-                <h2 style={{ fontSize: '26px', fontWeight: '800', margin: '0', color: '#ff3333' }}>Generation Failed</h2>
-                <p style={{ color: 'var(--text-muted)' }}>{error}</p>
-                <button className="btn-primary" onClick={() => navigate('/setup')} style={{ marginTop: '20px' }}>Go Back to Setup</button>
-            </>
+          <div style={{ background: 'var(--bg-surface-1)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: '36px 28px', width: '100%' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--color-error-bg)', border: '1px solid rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#EF4444' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '26px' }}>error_outline</span>
+            </div>
+            <h1 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>Plan Compilation Failed</h1>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: 1.5, marginBottom: '24px' }}>{error}</p>
+            <button className="btn-primary" onClick={() => navigate('/setup')} style={{ width: '100%' }}>
+              Return to Biometrics Calibration
+            </button>
+          </div>
         )}
       </div>
     </main>

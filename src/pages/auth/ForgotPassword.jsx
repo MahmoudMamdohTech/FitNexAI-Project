@@ -14,7 +14,7 @@ const ForgotPassword = () => {
     if (!email.trim() || !email.includes('@')) {
       setError('Please enter a valid email address.');
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
 
@@ -24,13 +24,12 @@ const ForgotPassword = () => {
     
     try {
       await authService.forgotPassword(email);
-      // We show a success message regardless of if the email exists for security reasons
       setMessage("If an account with that email exists, a password reset link has been sent.");
       setEmail('');
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
     } finally {
       setLoading(false);
     }
@@ -40,10 +39,10 @@ const ForgotPassword = () => {
     <div className="auth-page">
       <main className="auth-main">
         <div className={`auth-card ${shake ? 'shake' : ''}`}>
-          {/* Icon */}
+          {/* Lock icon */}
           <div className="auth-icon-wrapper">
             <div className="auth-icon-circle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#39ff14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '28px', height: '28px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px' }}>
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
@@ -52,7 +51,7 @@ const ForgotPassword = () => {
 
           <h1 className="auth-card-title">Reset Password</h1>
           <p className="auth-card-subtitle">
-            Enter your email and we'll send you a link to reset your password.
+            Enter your email and we'll send you a link to reset your credentials.
           </p>
 
           <form onSubmit={handleSubmit} noValidate>
@@ -68,7 +67,7 @@ const ForgotPassword = () => {
             )}
 
             {message && (
-              <div className="auth-success-banner">
+              <div style={{ background: 'var(--brand-primary-tint)', border: '1px solid var(--brand-primary-border)', color: 'var(--brand-primary)', padding: '12px 16px', borderRadius: 'var(--radius-sm)', fontSize: '13px', lineHeight: 1.5, marginBottom: '20px', textAlign: 'center' }}>
                 {message}
               </div>
             )}
@@ -85,7 +84,7 @@ const ForgotPassword = () => {
                       </svg>
                     </span>
                     <input
-                      className={`form-input ${error ? 'input-error' : ''}`}
+                      className="form-input"
                       type="email"
                       id="email"
                       value={email}
@@ -97,17 +96,18 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: '1rem' }}>
-                  {loading ? 'Sending Link...' : 'SEND RESET LINK'}
+                <button type="submit" className="btn-primary auth-btn" disabled={loading} style={{ marginTop: '0.5rem' }}>
+                  {loading ? 'Sending link...' : 'Send Reset Link'}
                 </button>
               </>
             )}
           </form>
 
-          <div className="auth-divider"></div>
-          <p className="auth-switch">
-            Remember your password? <Link to="/login">Log In →</Link>
-          </p>
+          <div className="auth-sub-links" style={{ justifyContent: 'center' }}>
+            <Link to="/login" style={{ color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              ← Back to Login
+            </Link>
+          </div>
         </div>
       </main>
     </div>

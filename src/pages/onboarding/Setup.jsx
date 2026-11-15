@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { userService } from '../../services/userService';
 import api from '../../services/api';
 
+const GOAL_OPTIONS = [
+  { id: 1, label: 'Hypertrophy / Gain', desc: 'Build lean muscle mass with caloric surplus' },
+  { id: 3, label: 'Maintenance / Recomp', desc: 'Sustain mass while improving power-to-weight ratio' },
+  { id: 2, label: 'Fat Loss / Cut', desc: 'Target body fat reduction while sparing lean muscle' },
+];
+
 const Setup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -32,7 +38,7 @@ const Setup = () => {
           }));
         }
       } catch (err) {
-        console.warn("Could not fetch existing profile config. Using defaults.");
+        console.warn("Could not fetch existing profile config. Using defaults.", err);
       }
     };
     fetchExistingPrefs();
@@ -69,7 +75,6 @@ const Setup = () => {
       }
 
       if (!isRemoving && oppField) {
-        // Automatically remove it from the opposing category
         nextState[oppField] = prev[oppField].filter(i => i !== item);
       }
 
@@ -82,7 +87,7 @@ const Setup = () => {
     
     // Validation
     if (!formData.age || !formData.height || !formData.weight) {
-      setError("Please fill in all physical statistics (Age, Height, Weight)");
+      setError("Please fill in all physical biometrics (Age, Height, and Weight).");
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -109,93 +114,166 @@ const Setup = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '120px' }}>
+    <div className="container" style={{ paddingTop: '100px', paddingBottom: '60px' }}>
       <div className="setup-header">
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Let's build <span className="neon">your machine.</span></h1>
-        <p style={{ color: 'var(--text-muted)', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
-          Enter your details below to calibrate your personalized enhancement plan.
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '4px 12px', borderRadius: 'var(--radius-pill)', background: 'var(--brand-primary-tint)', border: '1px solid var(--brand-primary-border)', marginBottom: '14px' }}>
+          <span style={{ color: 'var(--brand-primary)', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Biometric Calibration
+          </span>
+        </div>
+        <h1>Personalize Your <span style={{ color: 'var(--brand-primary)' }}>Performance Plan</span></h1>
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto', lineHeight: '1.6', fontSize: '15px' }}>
+          Calibrate your physiological baselines and nutritional strategy for tailored AI exercise & macro targets.
         </p>
       </div>
 
-      {error && <div style={{ background: 'rgba(255,0,0,0.1)', color: 'var(--neon-pink)', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center' }}>{error}</div>}
+      {error && (
+        <div style={{ background: 'var(--color-error-bg)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--color-error)', padding: '14px 20px', borderRadius: 'var(--radius-sm)', maxWidth: '1080px', margin: '0 auto 24px', textAlign: 'center', fontSize: '14px', fontWeight: '500' }}>
+          {error}
+        </div>
+      )}
 
       <form id="setupForm" className="setup-grid" onSubmit={handleGenerate}>
-
-        {/* Stats Column */}
-        <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Left Column: Physical Biometrics */}
+        <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
           <div className="card-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', marginRight: '8px' }}>
-              <path d="M18 20V10M12 20V4M6 20v-6" />
-            </svg>
-            The Stats
+            <span className="material-symbols-outlined" style={{ color: 'var(--brand-primary)', fontSize: '22px' }}>
+              straighten
+            </span>
+            Physical Biometrics
           </div>
 
           <div>
-            <label className="form-label">Gender</label>
+            <label className="form-label">Biological Sex</label>
             <div className="toggle-group">
-              <div className={`toggle-btn ${formData.gender === 'Male' ? 'active' : ''}`} onClick={() => setFormData({ ...formData, gender: 'Male' })}>Male</div>
-              <div className={`toggle-btn ${formData.gender === 'Female' ? 'active' : ''}`} onClick={() => setFormData({ ...formData, gender: 'Female' })}>Female</div>
+              <div
+                className={`toggle-btn ${formData.gender === 'Male' ? 'active' : ''}`}
+                onClick={() => setFormData({ ...formData, gender: 'Male' })}
+              >
+                Male
+              </div>
+              <div
+                className={`toggle-btn ${formData.gender === 'Female' ? 'active' : ''}`}
+                onClick={() => setFormData({ ...formData, gender: 'Female' })}
+              >
+                Female
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
               <label className="form-label">Age</label>
-              <input type="number" className="form-input" placeholder="e.g. 25" value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value === '' ? '' : Number(e.target.value) })} />
+              <input
+                type="number"
+                className="form-input"
+                placeholder="Years (e.g. 26)"
+                value={formData.age}
+                onChange={e => setFormData({ ...formData, age: e.target.value === '' ? '' : Number(e.target.value) })}
+              />
             </div>
             <div>
               <label className="form-label">Height (cm)</label>
-              <input type="number" className="form-input" placeholder="e.g. 180" value={formData.height} onChange={e => setFormData({ ...formData, height: e.target.value === '' ? '' : Number(e.target.value) })} />
+              <input
+                type="number"
+                className="form-input"
+                placeholder="cm (e.g. 182)"
+                value={formData.height}
+                onChange={e => setFormData({ ...formData, height: e.target.value === '' ? '' : Number(e.target.value) })}
+              />
             </div>
           </div>
 
           <div>
             <label className="form-label">Weight (kg)</label>
-            <input type="number" className="form-input" placeholder="e.g. 75" value={formData.weight} onChange={e => setFormData({ ...formData, weight: e.target.value === '' ? '' : Number(e.target.value) })} />
+            <input
+              type="number"
+              className="form-input"
+              placeholder="kg (e.g. 78)"
+              value={formData.weight}
+              onChange={e => setFormData({ ...formData, weight: e.target.value === '' ? '' : Number(e.target.value) })}
+            />
           </div>
 
           <div>
-            <label className="form-label">Goal</label>
-            <div className="toggle-group" style={{ flexDirection: 'row' }}>
-              <div className={`toggle-btn ${formData.goal === 1 ? 'active' : ''}`} onClick={() => setFormData({ ...formData, goal: 1 })}>Gain</div>
-              <div className={`toggle-btn ${formData.goal === 3 ? 'active' : ''}`} onClick={() => setFormData({ ...formData, goal: 3 })}>Maintain</div>
-              <div className={`toggle-btn ${formData.goal === 2 ? 'active' : ''}`} onClick={() => setFormData({ ...formData, goal: 2 })}>Loss</div>
+            <label className="form-label">Primary Training Goal</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {GOAL_OPTIONS.map(opt => (
+                <div
+                  key={opt.id}
+                  onClick={() => setFormData({ ...formData, goal: opt.id })}
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    background: formData.goal === opt.id ? 'var(--brand-primary-tint)' : 'var(--bg-surface-2)',
+                    border: formData.goal === opt.id ? '1px solid var(--brand-primary-border)' : '1px solid var(--border-default)',
+                    cursor: 'pointer',
+                    transition: 'all 150ms var(--ease-out)',
+                  }}
+                >
+                  <div style={{ fontSize: '14px', fontWeight: '700', color: formData.goal === opt.id ? 'var(--brand-primary)' : 'var(--text-primary)' }}>
+                    {opt.label}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    {opt.desc}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           <div>
             <label className="form-label">Activity Level</label>
-            <select className="form-input" value={formData.activity_level} onChange={e => setFormData({ ...formData, activity_level: Number(e.target.value) })}>
-              <option value={0}>Sedentary</option>
-              <option value={1}>Lightly Active</option>
-              <option value={2}>Moderately Active</option>
-              <option value={3}>Very Active</option>
-              <option value={4}>Extremely Active</option>
+            <select
+              className="form-input"
+              value={formData.activity_level}
+              onChange={e => setFormData({ ...formData, activity_level: Number(e.target.value) })}
+            >
+              <option value={0}>Sedentary (Little or no exercise)</option>
+              <option value={1}>Lightly Active (1-3 workout days/wk)</option>
+              <option value={2}>Moderately Active (3-5 workout days/wk)</option>
+              <option value={3}>Very Active (6-7 intense training days/wk)</option>
+              <option value={4}>Extremely Active (Athletic doubles / heavy labour)</option>
             </select>
           </div>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column: Nutrition & Preferences */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-          <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="card-title">Nutrition</div>
+          <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="card-title">
+              <span className="material-symbols-outlined" style={{ color: 'var(--brand-primary)', fontSize: '22px' }}>
+                restaurant_menu
+              </span>
+              Nutritional Framework
+            </div>
 
             <div>
-              <label className="form-label">Dietary Preference</label>
-              <select className="form-input" value={formData.diet} onChange={e => setFormData({ ...formData, diet: Number(e.target.value) })}>
-                <option value={0}>Omnivore</option>
-                <option value={1}>Vegetarian</option>
-                <option value={2}>Vegan</option>
-                <option value={3}>Pescatarian</option>
+              <label className="form-label">Dietary Framework</label>
+              <select
+                className="form-input"
+                value={formData.diet}
+                onChange={e => setFormData({ ...formData, diet: Number(e.target.value) })}
+              >
+                <option value={0}>Omnivore (Balanced meat & plants)</option>
+                <option value={1}>Vegetarian (Plant-based + dairy/eggs)</option>
+                <option value={2}>Vegan (100% plant-derived)</option>
+                <option value={3}>Pescatarian (Fish & seafood + plants)</option>
               </select>
             </div>
 
             <div>
-              <label className="form-label">Favorites</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label className="form-label" style={{ margin: 0 }}>Preferred Foods</label>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Tap to select</span>
+              </div>
               <div className="chip-container">
                 {favoritesList.map(fav => (
-                  <div key={fav} className={`chip ${formData.favorites.includes(fav) ? 'active' : ''}`} onClick={() => toggleArrayItem('favorites', fav)}>
+                  <div
+                    key={fav}
+                    className={`chip ${formData.favorites.includes(fav) ? 'active' : ''}`}
+                    onClick={() => toggleArrayItem('favorites', fav)}
+                  >
                     {fav}
                   </div>
                 ))}
@@ -203,7 +281,10 @@ const Setup = () => {
             </div>
 
             <div>
-              <label className="form-label">Dislikes / Exclusions</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label className="form-label" style={{ margin: 0 }}>Disliked / Excluded Foods</label>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Excluded from meal generation</span>
+              </div>
               <div className="chip-container">
                 {favoritesList.map(fav => {
                   const isDisliked = formData.dislikes.includes(fav);
@@ -213,11 +294,13 @@ const Setup = () => {
                       className="chip"
                       onClick={() => toggleArrayItem('dislikes', fav)}
                       style={{
-                        background: isDisliked ? 'rgba(255, 0, 0, 0.15)' : '',
-                        borderColor: isDisliked ? '#ff3333' : '',
-                        color: isDisliked ? '#ff3333' : ''
+                        background: isDisliked ? 'rgba(239, 68, 68, 0.12)' : undefined,
+                        borderColor: isDisliked ? 'rgba(239, 68, 68, 0.4)' : undefined,
+                        color: isDisliked ? '#F87171' : undefined,
+                        fontWeight: isDisliked ? '600' : undefined,
                       }}
                     >
+                      {isDisliked && '✕ '}
                       {fav}
                     </div>
                   );
@@ -226,13 +309,28 @@ const Setup = () => {
             </div>
           </div>
 
-          <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div className="card-title">Medical Conditions</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="preferences-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="card-title">
+              <span className="material-symbols-outlined" style={{ color: 'var(--brand-primary)', fontSize: '22px' }}>
+                medical_services
+              </span>
+              Health & Medical Constraints
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
               {medicalList.map(med => (
-                <div key={med} className={`selectable-card ${formData.medical.includes(med) ? 'active' : ''}`} onClick={() => toggleArrayItem('medical', med)}>
-                  <div className="check-icon" style={{ width: '16px', height: '16px', background: formData.medical.includes(med) ? 'var(--neon-green)' : 'transparent', borderRadius: '4px' }}></div>
-                  {med}
+                <div
+                  key={med}
+                  className={`selectable-card ${formData.medical.includes(med) ? 'active' : ''}`}
+                  onClick={() => toggleArrayItem('medical', med)}
+                >
+                  <div className="check-icon">
+                    {formData.medical.includes(med) && (
+                      <span className="material-symbols-outlined" style={{ fontSize: '14px', color: '#090A0C', fontWeight: 'bold' }}>
+                        check
+                      </span>
+                    )}
+                  </div>
+                  <span>{med}</span>
                 </div>
               ))}
             </div>
@@ -240,9 +338,15 @@ const Setup = () => {
         </div>
       </form>
 
-      <div className="setup-footer" style={{ marginTop: '2rem', textAlign: 'center' }}>
-        <button type="submit" form="setupForm" className="btn-primary" disabled={loading} style={{ padding: '16px 40px', fontSize: '16px' }}>
-          {loading ? 'PROCESSING...' : 'GENERATE PLAN'}
+      <div style={{ marginTop: '36px', textAlign: 'center' }}>
+        <button
+          type="submit"
+          form="setupForm"
+          className="btn-primary"
+          disabled={loading}
+          style={{ padding: '14px 44px', fontSize: '15px' }}
+        >
+          {loading ? 'Processing...' : 'Review & Calibrate Plan →'}
         </button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '../../services/authService';
 
@@ -11,17 +11,16 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(() => {
+    if (!token || !email) {
+      return "Invalid password reset link. Please request a new one.";
+    }
+    return null;
+  });
   const [success, setSuccess] = useState(false);
   const [shake, setShake] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!token || !email) {
-      setError("Invalid password reset link. Please request a new one.");
-    }
-  }, [token, email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,14 +29,14 @@ const ResetPassword = () => {
     if (password.length < 8) {
       setError('Password must be at least 8 characters long.');
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
       return;
     }
 
@@ -53,7 +52,7 @@ const ResetPassword = () => {
     } catch (err) {
       setError(err.message || 'Failed to reset password. The link may have expired.');
       setShake(true);
-      setTimeout(() => setShake(false), 600);
+      setTimeout(() => setShake(false), 300);
     } finally {
       setLoading(false);
     }
@@ -63,12 +62,17 @@ const ResetPassword = () => {
     return (
       <div className="auth-page">
         <main className="auth-main">
-          <div className="auth-card">
+          <div className="auth-card" style={{ textAlign: 'center' }}>
+            <div className="auth-icon-wrapper">
+              <div className="auth-icon-circle" style={{ background: 'var(--color-error-bg)', borderColor: 'rgba(239, 68, 68, 0.3)', color: '#EF4444' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>link_off</span>
+              </div>
+            </div>
             <h1 className="auth-card-title">Invalid Link</h1>
-            <p className="auth-card-subtitle">This password reset link is invalid or missing required parameters.</p>
-            <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-              <Link to="/forgot-password" style={{ color: '#39ff14', fontWeight: '600' }}>
-                Request New Link →
+            <p className="auth-card-subtitle">This password reset link is invalid or has expired.</p>
+            <div style={{ marginTop: '1.5rem' }}>
+              <Link to="/forgot-password" className="btn-primary" style={{ padding: '10px 24px', fontSize: '13px' }}>
+                Request New Link
               </Link>
             </div>
           </div>
@@ -83,25 +87,29 @@ const ResetPassword = () => {
         <div className={`auth-card ${shake ? 'shake' : ''}`}>
           <h1 className="auth-card-title">Create New Password</h1>
           <p className="auth-card-subtitle">
-            Enter a new password for <span style={{ color: '#39ff14' }}>{email}</span>.
+            Enter a new password for <span style={{ color: 'var(--brand-primary)', fontWeight: '600' }}>{email}</span>
           </p>
 
           {success ? (
-            <div className="auth-icon-wrapper" style={{ margin: '2rem 0' }}>
-              <div className="auth-icon-circle success">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#39ff14" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '32px', height: '32px' }}>
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
+            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+              <div className="auth-icon-wrapper">
+                <div className="auth-icon-circle" style={{ width: '56px', height: '56px' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '28px', height: '28px' }}>
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
               </div>
-              <h3 style={{ color: 'white', marginBottom: '8px' }}>Password Reset Successful!</h3>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
-                Redirecting you to login...
+              <h2 style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: '800', marginBottom: '8px' }}>
+                Password Reset Complete!
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                Redirecting you to login in a few seconds...
               </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate>
               {error && (
-                <div className="auth-error-banner visible" role="alert" style={{ marginBottom: '1rem' }}>
+                <div className="auth-error-banner visible" role="alert" style={{ marginBottom: '1.25rem' }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="8" x2="12" y2="12"/>
@@ -111,26 +119,30 @@ const ResetPassword = () => {
                 </div>
               )}
 
-              {/* New Password */}
               <div className="form-group">
                 <label className="form-label" htmlFor="password">New Password</label>
                 <div className="input-wrapper">
                   <span className="input-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2"/>
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                   </span>
                   <input
-                    className={`form-input ${error && password.length < 8 ? 'input-error' : ''}`}
-                    type={showPassword ? "text" : "password"}
+                    className="form-input"
+                    type={showPassword ? 'text' : 'password'}
                     id="password"
                     value={password}
                     onChange={e => { setPassword(e.target.value); setError(null); }}
-                    placeholder="At least 8 characters"
+                    placeholder="Min. 8 characters"
                     required
                   />
-                  <button type="button" className="input-toggle" onClick={() => setShowPassword(!showPassword)}>
+                  <button
+                    type="button"
+                    className="input-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
                     {showPassword ? (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px' }}>
                         <path d="M1 12S5 4 12 4s11 8 11 8-4 8-11 8S1 12 1 12z"/>
@@ -146,33 +158,38 @@ const ResetPassword = () => {
                 </div>
               </div>
 
-              {/* Confirm Password */}
               <div className="form-group">
                 <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
                 <div className="input-wrapper">
                   <span className="input-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12"></polyline>
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                   </span>
                   <input
-                    className={`form-input ${error && password !== confirmPassword ? 'input-error' : ''}`}
-                    type={showPassword ? "text" : "password"}
+                    className="form-input"
+                    type={showPassword ? 'text' : 'password'}
                     id="confirmPassword"
                     value={confirmPassword}
                     onChange={e => { setConfirmPassword(e.target.value); setError(null); }}
-                    placeholder="Retype your new password"
+                    placeholder="Repeat new password"
                     required
                   />
                 </div>
               </div>
 
-              <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: '1.5rem' }}>
-                {loading ? 'Saving...' : 'RESET PASSWORD'}
+              <button type="submit" className="btn-primary auth-btn" disabled={loading} style={{ marginTop: '0.5rem' }}>
+                {loading ? 'Updating password...' : 'Update Password'}
               </button>
             </form>
           )}
 
+          <div className="auth-sub-links" style={{ justifyContent: 'center' }}>
+            <Link to="/login" style={{ color: 'var(--text-secondary)' }}>
+              ← Return to Login
+            </Link>
+          </div>
         </div>
       </main>
     </div>

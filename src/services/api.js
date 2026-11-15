@@ -18,7 +18,7 @@ async function apiFetch(path, options = {}) {
   let res;
   try {
     res = await fetch(url, config);
-  } catch (networkError) {
+  } catch {
     throw new Error('Network error — check your connection or backend server.');
   }
 

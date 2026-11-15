@@ -1,19 +1,25 @@
-/* navbar */
+/* FitNex AI - Layout Styling (Navbar & Footer) */
+
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  padding: 16px 0;
-  border-bottom: 1px solid transparent;
-  transition: var(--transition);
+  padding: 18px 0;
+  background: rgba(9, 10, 12, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: padding 200ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
 }
 
 .navbar.scrolled {
-  background: rgba(10, 26, 10, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom-color: rgba(255, 255, 255, 0.07);
+  padding: 14px 0;
+  background: rgba(9, 10, 12, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .navbar .container {
@@ -27,14 +33,16 @@
   align-items: center;
   gap: 10px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--neon-green);
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  background: var(--brand-primary);
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,33 +50,35 @@
 }
 
 .logo-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .logo-text {
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 .logo-text span {
-  color: var(--neon-green);
+  color: var(--brand-primary);
 }
 
 .navbar-nav {
   display: flex;
   align-items: center;
   gap: 32px;
+  list-style: none;
 }
 
 .navbar-nav a {
   font-size: 14px;
   font-weight: 500;
   color: var(--text-secondary);
-  transition: var(--transition);
+  transition: color 150ms var(--ease-out);
+  padding: 8px 4px;
 }
 
 .navbar-nav a:hover {
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 .navbar-actions {
@@ -79,64 +89,133 @@
 
 .navbar-actions .login-link {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-secondary);
-  transition: var(--transition);
+  transition: color 150ms var(--ease-out);
+  padding: 8px 12px;
 }
 
 .navbar-actions .login-link:hover {
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 .hamburger {
   display: none;
   flex-direction: column;
+  justify-content: center;
   gap: 5px;
-  padding: 4px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
 .hamburger span {
   display: block;
-  width: 22px;
+  width: 100%;
   height: 2px;
-  background: var(--text-white);
-  border-radius: 2px;
-  transition: var(--transition);
+  background: var(--text-primary);
+  border-radius: 1px;
+  transition: transform 150ms var(--ease-out), opacity 150ms var(--ease-out);
 }
 
-/* footer */
+/* Mobile Nav Overlay */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 10, 12, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 24px;
+}
+
+.mobile-nav.open {
+  display: flex;
+  animation: fadeIn 200ms var(--ease-out);
+}
+
+.mobile-nav a {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 150ms var(--ease-out);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-nav a:hover {
+  color: var(--text-primary);
+}
+
+.mobile-nav .close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: var(--text-muted);
+  font-size: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 150ms var(--ease-out);
+}
+
+.mobile-nav .close-btn:hover {
+  color: var(--text-primary);
+}
+
+/* Footer */
 .footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 28px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-canvas);
+  padding: 40px 0;
+  margin-top: auto;
 }
 
 .footer .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 15px;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .footer-logo .logo-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
 }
 
 .footer-logo .logo-icon svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 
 .footer-copyright {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
@@ -147,13 +226,13 @@
 }
 
 .footer-links a {
-  font-size: 12px;
-  color: var(--text-muted);
-  transition: var(--transition);
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: color 150ms var(--ease-out);
 }
 
 .footer-links a:hover {
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 .footer-social {
@@ -163,10 +242,25 @@
 }
 
 .footer-social a {
-  color: var(--text-muted);
-  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  transition: color 150ms var(--ease-out), border-color 150ms var(--ease-out), background-color 150ms var(--ease-out);
 }
 
 .footer-social a:hover {
-  color: var(--text-white);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-surface-2);
+}
+
+.footer-social a svg {
+  width: 16px;
+  height: 16px;
 }

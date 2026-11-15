@@ -7,23 +7,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#39ff14',
-        'primary-hover': '#2de010',
-        background: {
-          dark: '#0a1a0a',
-          light: '#0a1a0a',
+        primary: '#00E575',
+        'primary-hover': '#00cc66',
+        canvas: '#090a0c',
+        surface: {
+          1: '#121418',
+          2: '#181c22',
+          3: '#21262e',
+          hover: '#1c2028',
         },
-        card: 'rgba(255,255,255,0.05)',
-        input: '#0f1f0f',
-        'sidebar-border': '#283928',
-        muted: 'rgba(255,255,255,0.55)',
-        secondary: 'rgba(255,255,255,0.75)',
+        background: {
+          dark: '#090a0c',
+          light: '#090a0c',
+        },
+        card: '#121418',
+        input: '#15181e',
+        'sidebar-border': 'rgba(255, 255, 255, 0.08)',
+        muted: '#9CA3AF',
+        secondary: '#D1D5DB',
+        brand: {
+          DEFAULT: '#00E575',
+          hover: '#00cc66',
+          tint: 'rgba(0, 229, 117, 0.1)',
+        },
       },
       fontFamily: {
         display: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
       borderColor: {
-        DEFAULT: 'rgba(255,255,255,0.1)',
+        DEFAULT: 'rgba(255, 255, 255, 0.08)',
+        subtle: 'rgba(255, 255, 255, 0.06)',
+        strong: 'rgba(255, 255, 255, 0.16)',
       },
     },
   },

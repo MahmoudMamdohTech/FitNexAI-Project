@@ -24,9 +24,9 @@ const drawSkeleton = (ctx, landmarks, width, height) => {
   ctx.clearRect(0, 0, width, height);
   if (!landmarks) return;
 
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = '#39ff14';
-  ctx.fillStyle = '#ff0055';
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = '#00E575';
+  ctx.fillStyle = '#FFFFFF';
 
   // draw lines between joints
   POSE_CONNECTIONS.forEach(([i, j]) => {
@@ -44,8 +44,11 @@ const drawSkeleton = (ctx, landmarks, width, height) => {
   landmarks.forEach((p) => {
     if (p && p.v > 0.4) {
       ctx.beginPath();
-      ctx.arc(p.x * width, p.y * height, 6, 0, 2 * Math.PI);
+      ctx.arc(p.x * width, p.y * height, 5, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#00E575';
+      ctx.stroke();
     }
   });
 };
@@ -54,7 +57,7 @@ const drawSkeleton = (ctx, landmarks, width, height) => {
 const initialAnalysis = {
   reps: 0,
   stage: 'idle',
-  feedback: 'Stand in frame',
+  feedback: 'Stand in frame to begin',
   confidence: 0,
   postureCorrect: true,
   processingMs: 0,
@@ -93,7 +96,7 @@ const AiCamera = () => {
   const captureCanvasRef = useRef(null);
   const overlayCanvasRef = useRef(null);
   const streamRef = useRef(null);
-  const sessionIdRef = useRef(`session-${Date.now()}`);
+  const sessionIdRef = useRef('session-default');
   const analyzeLockRef = useRef(false);
   const startLockRef = useRef(false);
   const activeExerciseRef = useRef(selectedExercise);
@@ -167,13 +170,13 @@ const AiCamera = () => {
     startLockRef.current = true;
 
     if (!navigator.mediaDevices?.getUserMedia) {
-      setAnalysisError('Camera is not supported in this browser. Use a modern Chrome/Edge/Safari version.');
+      setAnalysisError('Camera is not supported in this browser. Use a modern Chrome, Edge, or Safari version.');
       startLockRef.current = false;
       return;
     }
 
     if (!isSecureCameraContext()) {
-      setAnalysisError('Camera access requires HTTPS on LAN/public domains. Use https:// for deployed/LAN access or localhost for local testing.');
+      setAnalysisError('Camera access requires HTTPS or localhost context for browser security.');
       startLockRef.current = false;
       return;
     }
@@ -182,7 +185,7 @@ const AiCamera = () => {
       sessionIdRef.current = `session-${Date.now()}`;
       setIsRunning(true);
       setIsCameraReady(false);
-      dispatch({ type: 'RESET', payload: { feedback: 'Requesting camera permission...' } });
+      dispatch({ type: 'RESET', payload: { feedback: 'Initializing video stream...' } });
       setAnalysisError(null);
       landmarksRef.current = null;
 
@@ -205,10 +208,10 @@ const AiCamera = () => {
       await videoEl.play();
 
       setIsCameraReady(true);
-      dispatch({ type: 'RESET', payload: { feedback: 'Camera started. Align your body in frame.' } });
+      dispatch({ type: 'RESET', payload: { feedback: 'Camera ready. Step back to show full body.' } });
     } catch (err) {
       const errName = err?.name || err?.message || 'Unknown error';
-      setAnalysisError(`Could not access camera (${errName}). Please allow camera permissions or check if it is in use by another app.`);
+      setAnalysisError(`Could not access camera (${errName}). Please ensure camera permissions are granted.`);
       setIsRunning(false);
       setIsCameraReady(false);
       releaseCameraStream();
@@ -251,7 +254,7 @@ const AiCamera = () => {
                   frameB64
                 );
 
-                // update landmarks for rAF rendering (no re-render needed)
+                // update landmarks
                 landmarksRef.current = result.landmarks || null;
 
                 // single dispatch instead of 6 separate setStates
@@ -291,7 +294,7 @@ const AiCamera = () => {
     if (analysis.reps > 0) {
       try {
         await gymService.saveWorkout(activeExerciseRef.current, analysis.reps, analysis.confidence, 60);
-        dispatch({ type: 'RESET', payload: { feedback: `Workout saved! ${analysis.reps} reps logged.` } });
+        dispatch({ type: 'RESET', payload: { feedback: `Workout logged! ${analysis.reps} reps completed.` } });
       } catch (err) {
         console.error("Failed to save workout:", err);
       }
@@ -304,16 +307,33 @@ const AiCamera = () => {
   }, [releaseCameraStream]);
 
   return (
-    <div className="w-full mx-auto" style={{ animation: 'fadeIn 0.6s ease-out', maxWidth: '1200px' }}>
-      <header className="mb-6 lg:mb-8">
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>AI <span className="neon">Vision</span></h1>
-        <p style={{ color: 'var(--text-muted)' }}>Real-time pose analysis powered by FastAPI AI microservice.</p>
+    <div style={{ width: '100%', animation: 'fadeIn 250ms var(--ease-out)' }}>
+      <header style={{ marginBottom: '28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: isRunning ? 'var(--brand-primary)' : 'var(--text-muted)' }}></span>
+          <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', color: isRunning ? 'var(--brand-primary)' : 'var(--text-muted)' }}>
+            {isRunning ? 'Real-time Tracking Active' : 'Sensor Ready'}
+          </span>
+        </div>
+        <h1 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: '800', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+          AI <span style={{ color: 'var(--brand-primary)' }}>Vision Coach</span>
+        </h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
+          Sub-millimeter joint tracking with instant audio-visual kinematic form feedback.
+        </p>
       </header>
 
       <div className="flex flex-col lg:flex-row gap-6 items-stretch w-full">
-
-        {/* camera viewport */}
-        <div className="preferences-card flex-1 w-full relative overflow-hidden bg-black min-h-[60vh] lg:min-h-[600px]" style={{ padding: '0', border: '2px solid var(--neon-green)', borderRadius: '16px' }}>
+        {/* Camera Viewport Canvas */}
+        <div
+          className="flex-1 w-full relative overflow-hidden min-h-[50vh] lg:min-h-[580px]"
+          style={{
+            background: '#040506',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-lg)',
+            boxShadow: 'var(--shadow-lg)',
+          }}
+        >
           {isRunning ? (
             <>
               <video
@@ -333,49 +353,117 @@ const AiCamera = () => {
                   height: '100%',
                   pointerEvents: 'none',
                   objectFit: 'cover',
-                  transform: 'scaleX(-1)'
+                  transform: 'scaleX(-1)',
                 }}
               />
 
-              {/* overlay stats */}
-              <div className="absolute top-4 left-4 lg:top-5 lg:left-5 bg-black/60 px-3 py-2 lg:px-5 lg:py-3 rounded-xl border border-[#39ff14]">
-                <div className="text-[#aaa] text-[10px] lg:text-xs font-bold">EXERCISE</div>
-                <div className="text-white text-lg lg:text-2xl font-black">{selectedExercise.toUpperCase()}</div>
+              {/* HUD: Exercise Info (Top Left) */}
+              <div
+                className="absolute top-4 left-4 camera-hud-badge"
+                style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}
+              >
+                <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  Target Protocol
+                </span>
+                <span style={{ color: 'var(--text-primary)', fontSize: '16px', fontWeight: '800', letterSpacing: '-0.01em' }}>
+                  {selectedExercise}
+                </span>
               </div>
 
-              <div className="absolute top-4 right-4 lg:top-5 lg:right-5 bg-black/60 px-4 py-2 lg:px-7 lg:py-3 rounded-xl border border-[#39ff14] text-center">
-                <div className="text-[#aaa] text-[10px] lg:text-xs font-bold">REPS</div>
-                <div className="text-[#39ff14] text-3xl lg:text-[42px] font-black leading-none">{analysis.reps}</div>
+              {/* HUD: Rep Counter (Top Right) */}
+              <div
+                className="absolute top-4 right-4 camera-hud-badge"
+                style={{ textAlign: 'center', minWidth: '84px', padding: '8px 16px' }}
+              >
+                <span style={{ color: 'var(--text-muted)', fontSize: '10px', fontWeight: '700', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  Reps
+                </span>
+                <div style={{ color: 'var(--brand-primary)', fontSize: '36px', fontWeight: '900', lineHeight: 1 }}>
+                  {analysis.reps}
+                </div>
               </div>
 
-              <div className="absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 bg-[#39ff14]/20 px-4 py-2 lg:px-6 lg:py-2 rounded-full backdrop-blur-sm border border-[#39ff14] text-white font-semibold whitespace-nowrap text-sm lg:text-base">
-                {analysis.feedback}
+              {/* HUD: Real-time Feedback Pill (Bottom Center) */}
+              <div
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 camera-hud-badge"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 18px',
+                  borderRadius: 'var(--radius-pill)',
+                  border: analysis.postureCorrect ? '1px solid var(--brand-primary-border)' : '1px solid rgba(251, 191, 36, 0.4)',
+                }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{
+                    fontSize: '18px',
+                    color: analysis.postureCorrect ? 'var(--brand-primary)' : 'var(--color-carbs)',
+                  }}
+                >
+                  {analysis.postureCorrect ? 'check_circle' : 'warning'}
+                </span>
+                <span style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '600' }}>
+                  {analysis.feedback}
+                </span>
               </div>
 
-              <div className="absolute bottom-20 lg:bottom-[82px] left-4 lg:left-5 bg-black/60 p-2 lg:p-3 rounded-lg border border-[#39ff14] text-white text-[10px] lg:text-xs">
-                <div>Confidence: {analysis.confidence}%</div>
-                <div>Posture: {analysis.postureCorrect ? 'Correct' : 'Needs Fix'}</div>
-                <div>Latency: {analysis.processingMs} ms</div>
+              {/* HUD: Telemetry (Bottom Left) */}
+              <div
+                className="absolute bottom-6 left-4 camera-hud-badge hidden sm:flex flex-col gap-1"
+                style={{ fontSize: '11px', color: 'var(--text-secondary)' }}
+              >
+                <div>Confidence: <strong style={{ color: 'var(--text-primary)' }}>{analysis.confidence}%</strong></div>
+                <div>Posture: <strong style={{ color: analysis.postureCorrect ? 'var(--brand-primary)' : 'var(--color-carbs)' }}>{analysis.postureCorrect ? 'Correct' : 'Needs Fix'}</strong></div>
+                <div>Latency: <strong style={{ color: 'var(--text-primary)' }}>{analysis.processingMs} ms</strong></div>
               </div>
             </>
           ) : (
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span className="material-symbols-outlined" style={{ fontSize: '64px', color: '#333', marginBottom: '16px' }}>videocam_off</span>
-              <h3 style={{ color: '#888' }}>CAMERA INACTIVE</h3>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px', textAlign: 'center' }}>
+              <div
+                style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: 'var(--bg-surface-2)',
+                  border: '1px solid var(--border-default)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '16px',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>videocam</span>
+              </div>
+              <h2 style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>
+                Camera Inactive
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', maxWidth: '380px', lineHeight: 1.5, marginBottom: '24px' }}>
+                Select your target exercise and start camera tracking to activate computer vision pose analysis.
+              </p>
+              <button onClick={startCamera} className="btn-primary" style={{ padding: '12px 28px', fontSize: '14px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>play_circle</span>
+                Start Camera
+              </button>
             </div>
           )}
         </div>
 
-        {/* controls sidebar */}
-        <div className="flex flex-col gap-5 w-full lg:w-[320px] shrink-0">
-          <div className="preferences-card">
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '15px' }}>Configuration</h3>
-            <label className="form-label">Active Exercise</label>
+        {/* Controls Sidebar */}
+        <div className="flex flex-col gap-4 w-full lg:w-[320px] shrink-0">
+          <div className="preferences-card" style={{ padding: '22px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '14px', letterSpacing: '-0.01em' }}>
+              Exercise Protocol
+            </h2>
+            <label className="form-label">Active Movement</label>
             <select
               className="form-input"
               value={selectedExercise}
               onChange={(e) => setSelectedExercise(e.target.value)}
               disabled={isRunning}
+              style={{ cursor: isRunning ? 'not-allowed' : 'pointer' }}
             >
               {exerciseOptions.map((exercise) => (
                 <option key={exercise} value={exercise}>{exercise}</option>
@@ -383,33 +471,66 @@ const AiCamera = () => {
             </select>
           </div>
 
-          <div className="preferences-card">
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '15px' }}>Session Control</h3>
+          <div className="preferences-card" style={{ padding: '22px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '14px', letterSpacing: '-0.01em' }}>
+              Session Controller
+            </h2>
             {!isRunning ? (
-              <button onClick={startCamera} className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <span className="material-symbols-outlined">play_circle</span> Start Camera
+              <button
+                onClick={startCamera}
+                className="btn-primary"
+                style={{ width: '100%', padding: '13px', fontSize: '14px' }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>play_circle</span>
+                Start Session
               </button>
             ) : (
-              <button onClick={stopCamera} style={{ width: '100%', padding: '14px', fontSize: '16px', background: 'rgba(255,0,0,0.1)', color: '#ff4444', border: '1px solid #ff4444', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <span className="material-symbols-outlined">stop_circle</span> Stop & Save
+              <button
+                onClick={stopCamera}
+                style={{
+                  width: '100%',
+                  padding: '13px',
+                  fontSize: '14px',
+                  background: 'rgba(239, 68, 68, 0.12)',
+                  color: '#EF4444',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: 'var(--radius-sm)',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'background-color 150ms var(--ease-out)',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>stop_circle</span>
+                Stop & Log Workout
               </button>
             )}
           </div>
 
           {isRunning && (
-            <div className="preferences-card" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #222' }}>
-              <div style={{ color: '#aaa', fontSize: '12px', marginBottom: '5px' }}>Live State</div>
-              <div style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}>{analysis.stage.toUpperCase()}</div>
+            <div className="preferences-card" style={{ padding: '20px', background: 'var(--bg-surface-2)' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>
+                Movement Phase
+              </div>
+              <div style={{ color: 'var(--brand-primary)', fontSize: '20px', fontWeight: '800', letterSpacing: '0.02em' }}>
+                {analysis.stage.toUpperCase()}
+              </div>
             </div>
           )}
 
           {analysisError && (
-            <div className="preferences-card" style={{ background: 'rgba(255, 0, 0, 0.1)', border: '1px solid #ff4444', color: '#ff9090' }}>
+            <div className="preferences-card" style={{ padding: '16px', background: 'var(--color-error-bg)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--color-error)', fontSize: '13px', lineHeight: 1.5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', fontWeight: '700' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>error</span>
+                Analysis Error
+              </div>
               {analysisError}
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
