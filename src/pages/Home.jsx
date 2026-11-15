@@ -12,8 +12,8 @@ import elena from '../assets/elena.png';
 const STEPS = [
   {
     number: 'STEP 01',
-    title: 'Initialize Athlete Profile',
-    description: 'Set your baseline measurements, biometric stats, and dietary constraints with fast, encrypted onboarding.',
+    title: 'Set Your Baseline',
+    description: 'Tell us about your fitness targets, dietary preferences, and current routine in a quick setup.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -25,8 +25,8 @@ const STEPS = [
   },
   {
     number: 'STEP 02',
-    title: 'Calibrate Training Focus',
-    description: 'Select your physiological objective — hypertrophy, recomp, or fat loss. The AI balances macros and movement volume.',
+    title: 'Get Your Custom Plan',
+    description: 'We calculate your exact calories and generate balanced, delicious meal plans built around foods you enjoy.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
         <circle cx="12" cy="12" r="3" />
@@ -36,8 +36,8 @@ const STEPS = [
   },
   {
     number: 'STEP 03',
-    title: 'Launch Vision Coach',
-    description: 'Mount your device camera to receive real-time joint angle feedback, posture correction, and automatic repetition counting.',
+    title: 'Train with Live Feedback',
+    description: 'Open the AI camera during your workouts for real-time posture corrections and automatic rep tracking.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -57,17 +57,17 @@ const Home = () => {
       <section className="features-section" id="features">
         <div className="container">
           <div className="section-header" data-reveal>
-            <span className="section-tag">Integrated Ecosystem</span>
-            <h2 className="section-title">Engineered for Human Performance</h2>
+            <span className="section-tag">Everything You Need</span>
+            <h2 className="section-title">Designed for Real Results</h2>
             <p className="section-subtitle">
-              Unified biological telemetry combining computer vision exercise tracking with metabolic nutrition planning.
+              Simple, science-backed tools that take the stress and guesswork out of your workouts and daily nutrition.
             </p>
           </div>
 
           <div className="features-grid">
             <FeatureCard
-              title="Adaptive Meal Strategy"
-              description="Algorithmic macronutrient allocations calculated from your basal metabolic rate and physical expenditure targets."
+              title="Smart Macro Tracking"
+              description="Get daily calorie and macronutrient targets tailored to your body, goals, and lifestyle."
               icon={
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
                   <path d="M3 6h18M3 12h18M3 18h18" />
@@ -78,8 +78,8 @@ const Home = () => {
               }
             />
             <FeatureCard
-              title="Real-Time Vision Coach"
-              description="High-frequency 33-point pose landmark inference running directly on device with zero privacy leakage."
+              title="AI Form Coach"
+              description="Turn your webcam into a personal trainer. Get live posture feedback and rep counts as you lift."
               icon={
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
@@ -88,8 +88,8 @@ const Home = () => {
               }
             />
             <FeatureCard
-              title="Kinematic Analytics"
-              description="Track movement velocity, form breakdown thresholds, and strength progression over time."
+              title="Progress Analytics"
+              description="Track your consistency, strength gains, and body transformation with clear, encouraging insights."
               icon={
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
                   <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
@@ -105,10 +105,10 @@ const Home = () => {
       <section className="steps-section" id="how-it-works">
         <div className="container">
           <div className="section-header" data-reveal>
-            <span className="section-tag">Execution Flow</span>
-            <h2 className="section-title">How FitNex Operates</h2>
+            <span className="section-tag">Simple & Effective</span>
+            <h2 className="section-title">How It Works</h2>
             <p className="section-subtitle">
-              Three streamlined phases connecting baseline intake with real-time AI guidance.
+              Three simple steps to transform your health and fitness journey.
             </p>
           </div>
 
@@ -131,28 +131,28 @@ const Home = () => {
       <section className="testimonials-section" id="stories">
         <div className="container">
           <div className="section-header" data-reveal>
-            <span className="section-tag">Case Studies</span>
-            <h2 className="section-title">Athlete Outcomes</h2>
-            <p className="section-subtitle">Read how lifters, runners, and hybrid athletes integrate FitNex AI.</p>
+            <span className="section-tag">Real Stories</span>
+            <h2 className="section-title">Success Stories</h2>
+            <p className="section-subtitle">Real results from real people transforming their health with FitNex.</p>
           </div>
 
           <div className="testimonials-grid">
             <TestimonialCard
               name="Sarah Jenkins"
-              role="Competitive Powerlifter"
-              text="The AI camera coach detected a 4-degree valgus collapse on my third squat attempt that my coach missed from the side. Incredible tool."
+              role="Lost 8kg in 3 months"
+              text="The AI camera coach is like having a trainer in my living room. It caught my squat form slipping before I could hurt myself!"
               img={sarah}
             />
             <TestimonialCard
               name="Mike Ross"
-              role="Functional Fitness Coach"
-              text="The macro algorithm is mathematically grounded. No gimmicks, no extreme deficits — pure metabolic precision."
+              role="Added 20kg to his squat"
+              text="The nutrition planner takes all the stress out of eating right. Simple, realistic meals that actually keep me full."
               img={mike}
             />
             <TestimonialCard
               name="Elena Rodriguez"
-              role="Endurance Runner"
-              text="Keeping my protein partition stable while managing high-mileage glycogen demands was a guessing game until FitNex."
+              role="Running her first 10k"
+              text="It keeps me accountable and confident. Having my meals and workouts all in one clean dashboard made all the difference."
               img={elena}
             />
           </div>

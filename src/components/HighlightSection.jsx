@@ -9,12 +9,12 @@ const HighlightSection = () => {
           <div className="highlight-content">
             <div>
               <span className="section-tag">
-                Computer Vision Engine
+                Smart Nutrition & Coaching
               </span>
             </div>
-            <h2 className="highlight-title">Train with elite biomechanics. Fuel with precision.</h2>
+            <h2 className="highlight-title">Train like a pro, eat like a champion.</h2>
             <p className="highlight-desc">
-              FitNex AI couples sub-millimeter joint tracking with adaptive macronutrient partitioning. Gain immediate kinematic feedback on every repetition directly from your browser.
+              FitNex AI combines intelligent camera tracking with personalized nutrition planning, giving you instant guidance on every repetition without leaving your room.
             </p>
             <div className="highlight-features">
               <div className="highlight-feature-item">
@@ -23,7 +23,7 @@ const HighlightSection = () => {
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                <span>Real-time pose estimation &amp; rep lockout verification</span>
+                <span>Live posture corrections &amp; automatic rep counting</span>
               </div>
               <div className="highlight-feature-item">
                 <div className="highlight-feature-icon">
@@ -31,7 +31,7 @@ const HighlightSection = () => {
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                <span>Algorithmic BMR &amp; macro partition matching your objective</span>
+                <span>Daily meal plans customized to your exact calorie &amp; macro goals</span>
               </div>
               <div className="highlight-feature-item">
                 <div className="highlight-feature-icon">
@@ -39,7 +39,7 @@ const HighlightSection = () => {
                     <polyline points="1.5 6 4.5 9 10.5 3" />
                   </svg>
                 </div>
-                <span>Private local browser processing with zero cloud video storage</span>
+                <span>100% private webcam analysis — video is never stored on a server</span>
               </div>
             </div>
           </div>
